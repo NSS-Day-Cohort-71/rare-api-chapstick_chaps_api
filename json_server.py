@@ -2,6 +2,7 @@ import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from views import create_user, login_user
+from views import get_categories
 
 
 class JSONServer(HandleRequests):
@@ -40,6 +41,18 @@ class JSONServer(HandleRequests):
         content_len = int(self.headers.get("content-length", 0))
         request_body = self.rfile.read(content_len)
         request_body = json.loads(request_body)
+
+        if url["requested_resource"] == "categories":
+            if url["pk"] != 0:
+                pass
+            else:
+                response = get_categories()
+                if response:
+                    return self.response(response, status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
 
 
 def main():

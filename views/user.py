@@ -19,10 +19,10 @@ def login_user(user):
 
         db_cursor.execute(
             """
-            select id, username
-            from Users
-            where username = ?
-            and password = ?
+            SELECT id, username
+            FROM Users
+            WHERE username = ?
+            AND password = ?
         """,
             (user["username"], user["password"]),
         )
