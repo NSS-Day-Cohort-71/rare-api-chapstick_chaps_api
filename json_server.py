@@ -1,7 +1,7 @@
 import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
-from views import create_user
+from views import create_user, login_user
 
 
 class JSONServer(HandleRequests):
@@ -25,6 +25,21 @@ class JSONServer(HandleRequests):
                     "registration failed",
                     status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
                 )
+
+        elif url["requested_resource"] == "login":
+            response = login_user(request_body)
+            if response:
+                return self.response(response, status.HTTP_200_SUCCESS.value)
+            else:
+                return self.response("", status.HTTP_500_SERVER_ERROR.value)
+
+    def do_GET(self):
+        """Handle GET requests from a client"""
+
+        url = self.parse_url(self.path)
+        content_len = int(self.headers.get("content-length", 0))
+        request_body = self.rfile.read(content_len)
+        request_body = json.loads(request_body)
 
 
 def main():
