@@ -90,3 +90,5 @@ INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 INSERT INTO Categories ('label') VALUES ('Sports');
 INSERT INTO Categories ('label') VALUES ('Lifestyle');
+INSERT INTO Tags ('label') VALUES ('Python');
+INSERT INTO Tags ('label') VALUES ('SQLite');

@@ -4,6 +4,7 @@ from request_handler import HandleRequests, status
 from views import create_user, login_user
 from views import get_categories
 from views import get_tags
+from views import create_post
 
 
 class JSONServer(HandleRequests):
@@ -32,6 +33,12 @@ class JSONServer(HandleRequests):
             response = login_user(request_body)
             if response:
                 return self.response(response, status.HTTP_200_SUCCESS.value)
+            else:
+                return self.response("", status.HTTP_500_SERVER_ERROR.value)
+        elif url["requested_resource"] == "posts":
+            response = create_post(request_body)
+            if response:
+                return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
             else:
                 return self.response("", status.HTTP_500_SERVER_ERROR.value)
 
