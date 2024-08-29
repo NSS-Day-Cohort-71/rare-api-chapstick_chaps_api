@@ -2,7 +2,7 @@ import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from views import create_user, login_user
-from views import get_categories
+from views import get_categories, create_category
 from views import get_tags, create_tag
 from views import create_post
 
@@ -47,6 +47,12 @@ class JSONServer(HandleRequests):
                 return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
             else:
                 return self.response("", status.HTTP_500_SERVER_ERROR.value)
+        elif url["requested_resource"] == "categories":
+            response = create_category(request_body)
+            if response:
+                return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+            else:
+                return self.response("", status.HTTP_500_SERVER_ERROR.value)
 
     def do_GET(self):
         """Handle GET requests from a client"""
@@ -69,6 +75,17 @@ class JSONServer(HandleRequests):
                 pass
             else:
                 response = get_tags()
+                if response:
+                    return self.response(response, status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
+        elif url["requested_resource"] == "categories":
+            if url["pk"] != 0:
+                pass
+            else:
+                response = get_categories()
                 if response:
                     return self.response(response, status.HTTP_200_SUCCESS.value)
                 else:
