@@ -24,3 +24,22 @@ def get_tags():
 
         serialized_tags = json.dumps(tags)
     return serialized_tags
+
+
+def create_tag(tag):
+
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+                INSERT INTO Tags (label)
+                VALUES (?)
+            """,
+            (tag["label"],),
+        )
+
+        id = db_cursor.lastrowid
+
+        return json.dumps({"tag_id": id})

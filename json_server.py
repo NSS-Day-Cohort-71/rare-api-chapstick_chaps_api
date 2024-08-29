@@ -3,7 +3,7 @@ from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from views import create_user, login_user
 from views import get_categories
-from views import get_tags
+from views import get_tags, create_tag
 from views import create_post
 
 
@@ -37,6 +37,12 @@ class JSONServer(HandleRequests):
                 return self.response("", status.HTTP_500_SERVER_ERROR.value)
         elif url["requested_resource"] == "posts":
             response = create_post(request_body)
+            if response:
+                return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+            else:
+                return self.response("", status.HTTP_500_SERVER_ERROR.value)
+        elif url["requested_resource"] == "tags":
+            response = create_tag(request_body)
             if response:
                 return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
             else:
