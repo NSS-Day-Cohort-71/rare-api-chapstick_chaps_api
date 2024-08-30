@@ -14,6 +14,7 @@ def get_tags():
                 t.id, 
                 t.label
             FROM Tags t
+            ORDER BY t.label
         """
         )
 
