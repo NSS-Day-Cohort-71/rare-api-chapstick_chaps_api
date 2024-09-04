@@ -93,3 +93,5 @@ INSERT INTO Categories ('label') VALUES ('Lifestyle');
 INSERT INTO Tags ('label') VALUES ('Python');
 INSERT INTO Tags ('label') VALUES ('SQLite');
 
+ALTER TABLE Comments
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;

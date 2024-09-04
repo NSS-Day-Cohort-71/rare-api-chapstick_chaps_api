@@ -12,6 +12,8 @@ from views import (
     delete_post,
     update_post
 )
+from views import create_comment, get_comments
+
 
 
 class JSONServer(HandleRequests):
