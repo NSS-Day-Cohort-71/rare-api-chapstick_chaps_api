@@ -110,6 +110,7 @@ def get_posts_by_user_id(id):
             LEFT JOIN Categories c ON p.category_id = c.id
             LEFT JOIN Users u ON p.user_id = u.id
             WHERE p.user_id = ?
+            ORDER BY p.publication_date DESC
             """,
             (id,),
         )
@@ -146,7 +147,7 @@ def get_posts_by_user_id(id):
     return serialized_posts
 
 
-def get_postById(pk):
+def get_post_by_id(pk):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()

@@ -4,7 +4,7 @@ from request_handler import HandleRequests, status
 from views import create_user, login_user, get_user_by_id
 from views import get_categories, create_category
 from views import get_tags, create_tag
-from views import create_post, get_posts, get_postById, get_posts_by_user_id
+from views import create_post, get_posts, get_post_by_id, get_posts_by_user_id
 
 
 class JSONServer(HandleRequests):
@@ -107,6 +107,14 @@ class JSONServer(HandleRequests):
                     return self.response(
                         "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                     )
+        elif url["requested_resource"] == "postDetails":
+            response_body = get_post_by_id(url["pk"])
+            if response_body:
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+            else:
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
 
 
 def main():
