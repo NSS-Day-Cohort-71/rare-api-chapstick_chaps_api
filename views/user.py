@@ -68,3 +68,31 @@ def create_user(user):
         id = db_cursor.lastrowid
 
         return json.dumps({"token": id, "valid": True})
+
+
+def get_user_by_id(id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            SELECT
+                id,
+                first_name,
+                last_name,
+                email,
+                bio,
+                username
+            FROM Users
+            WHERE id = ?
+            """,
+            (id,),
+        )
+
+        user_from_db = db_cursor.fetchone()
+
+        if user_from_db is not None:
+            return json.dumps(dict(user_from_db))
+        else:
+            return False

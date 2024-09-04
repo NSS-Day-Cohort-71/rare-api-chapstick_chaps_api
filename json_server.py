@@ -1,10 +1,10 @@
 import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
-from views import create_user, login_user
+from views import create_user, login_user, get_user_by_id
 from views import get_categories, create_category
 from views import get_tags, create_tag
-from views import create_post, get_posts,get_postById
+from views import create_post, get_posts, get_post_by_id, get_posts_by_user_id
 
 
 class JSONServer(HandleRequests):
@@ -81,11 +81,9 @@ class JSONServer(HandleRequests):
                     return self.response(
                         "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                     )
-        elif url["requested_resource"] == "categories":
+        elif url["requested_resource"] == "users":
             if url["pk"] != 0:
-                pass
-            else:
-                response = get_categories()
+                response = get_user_by_id(url["pk"])
                 if response:
                     return self.response(response, status.HTTP_200_SUCCESS.value)
                 else:
@@ -93,19 +91,30 @@ class JSONServer(HandleRequests):
                         "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                     )
         elif url["requested_resource"] == "posts":
-            if url["pk"] !=0:
-                response_body = get_postById(url["pk"])
-                if response_body:
-                    return self.response(response_body, status.HTTP_200_SUCCESS.value)
-                else: 
-                    return self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
-            
+            if url["pk"] != 0:
+                response = get_posts_by_user_id(url["pk"])
+                if response:
+                    return self.response(response, status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
             else:
                 response = get_posts()
                 if response:
                     return self.response(response, status.HTTP_200_SUCCESS.value)
                 else:
-                    return self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                    return self.response(
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
+        elif url["requested_resource"] == "postDetails":
+            response_body = get_post_by_id(url["pk"])
+            if response_body:
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+            else:
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
 
 
 def main():
