@@ -4,7 +4,13 @@ from request_handler import HandleRequests, status
 from views import create_user, login_user, get_user_by_id
 from views import get_categories, create_category
 from views import get_tags, create_tag
-from views import create_post, get_posts, get_post_by_id, get_posts_by_user_id
+from views import (
+    create_post,
+    get_posts,
+    get_post_by_id,
+    get_posts_by_user_id,
+    delete_post,
+)
 
 
 class JSONServer(HandleRequests):
@@ -115,6 +121,20 @@ class JSONServer(HandleRequests):
                 return self.response(
                     "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                 )
+
+    def do_DELETE(self):
+        url = self.parse_url(self.path)
+
+        if url["requested_resource"] == "posts":
+            response = delete_post(url["pk"])
+            if response:
+                return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+            else:
+                return self.response(
+                    "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
+                )
+        else:
+            pass
 
 
 def main():
