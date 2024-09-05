@@ -10,6 +10,7 @@ from views import (
     get_post_by_id,
     get_posts_by_user_id,
     delete_post,
+    update_post
 )
 
 
@@ -135,7 +136,23 @@ class JSONServer(HandleRequests):
                 )
         else:
             pass
+    def do_PUT(self):
+        """Handle PUT request from a client"""
+        #Parse the URL and get the primary key
+        url = self.parse_url(self.path)
+        pk = url["pk"]
 
+        #Get the request body JSON for the new data
+        content_len = int(self.headers.get("content-length", 0))
+        request_body = self.rfile.read(content_len)
+        request_body = json.loads(request_body)
+
+        if url["requested_resource"] == "posts":
+            if pk != 0:
+                successfully_updated = update_post(pk, request_body)
+                if successfully_updated:
+                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                
 
 def main():
     host = ""

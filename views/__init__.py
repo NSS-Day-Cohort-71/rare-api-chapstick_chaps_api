@@ -7,4 +7,5 @@ from .post import (
     get_post_by_id,
     get_posts_by_user_id,
     delete_post,
+    update_post
 )
