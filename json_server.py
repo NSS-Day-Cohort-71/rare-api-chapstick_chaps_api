@@ -3,14 +3,14 @@ from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from views import create_user, login_user, get_user_by_id
 from views import get_categories, create_category
-from views import get_tags, create_tag
+from views import get_tags, create_tag, update_tag
 from views import (
     create_post,
     get_posts,
     get_post_by_id,
     get_posts_by_user_id,
     delete_post,
-    update_post
+    update_post,
 )
 
 
@@ -136,13 +136,14 @@ class JSONServer(HandleRequests):
                 )
         else:
             pass
+
     def do_PUT(self):
         """Handle PUT request from a client"""
-        #Parse the URL and get the primary key
+        # Parse the URL and get the primary key
         url = self.parse_url(self.path)
         pk = url["pk"]
 
-        #Get the request body JSON for the new data
+        # Get the request body JSON for the new data
         content_len = int(self.headers.get("content-length", 0))
         request_body = self.rfile.read(content_len)
         request_body = json.loads(request_body)
@@ -151,8 +152,23 @@ class JSONServer(HandleRequests):
             if pk != 0:
                 successfully_updated = update_post(pk, request_body)
                 if successfully_updated:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
-                
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+            else:
+                pass
+        elif url["requested_resource"] == "tags":
+            if pk != 0:
+                successfully_updated = update_tag(pk, request_body)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                else:
+                    return self.response("", status.HTTP_500_SERVER_ERROR)
+            else:
+                pass
+
 
 def main():
     host = ""
