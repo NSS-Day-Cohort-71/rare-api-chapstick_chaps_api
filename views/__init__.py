@@ -9,3 +9,4 @@ from .post import (
     delete_post,
     update_post,
 )
+from .comment import create_comment, get_comments
