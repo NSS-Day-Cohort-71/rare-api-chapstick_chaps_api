@@ -3,7 +3,7 @@ from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from views import create_user, login_user, get_user_by_id
 from views import get_categories, create_category
-from views import get_tags, create_tag, update_tag
+from views import get_tags, create_tag, update_tag, delete_tag
 from views import (
     create_post,
     get_posts,
@@ -125,17 +125,38 @@ class JSONServer(HandleRequests):
 
     def do_DELETE(self):
         url = self.parse_url(self.path)
+        pk = url["pk"]
 
         if url["requested_resource"] == "posts":
-            response = delete_post(url["pk"])
-            if response:
-                return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+            if pk != 0:
+                response = delete_post(url["pk"])
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                else:
+                    return self.response(
+                        "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
+                    )
             else:
-                return self.response(
-                    "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
-                )
+                pass
+        elif url["requested_resource"] == "tags":
+            if pk != 0:
+                response = delete_tag(url["pk"])
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                else:
+                    return self.response(
+                        "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
+                    )
+            else:
+                pass
         else:
-            pass
+            return self.response(
+                "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
+            )
 
     def do_PUT(self):
         """Handle PUT request from a client"""
